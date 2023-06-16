@@ -1,3 +1,4 @@
+
 name: Build EXE
 
 on:
@@ -23,12 +24,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller
 
-      - name: Build EXE
-        run: pyinstaller --onefile main.py
+      - name: Build EXE for all Python scripts
+        run: |
+          $ErrorActionPreference = "Stop"
+          Get-ChildItem -Path . -Include *.py -Recurse -File | ForEach-Object {
+            $scriptPath = $_.FullName
+            Write-Host "Compiling $scriptPath"
+            pyinstaller --onefile $scriptPath
+            Remove-Item -Path "$(($_.BaseName)+'.spec')" -ErrorAction Ignore
+          }
 
-      - name: Upload EXE
+      - name: Upload EXE files
         uses: actions/upload-artifact@v2
         with:
-          name: exe-file
+          name: exe-files
           path: dist/
-
