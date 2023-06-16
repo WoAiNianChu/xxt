@@ -31,6 +31,4 @@ jobs:
         with:
           name: exe-file
           path: dist/
-```
 
-请确保将`your_script.py`替换为你的Python脚本的文件名。
